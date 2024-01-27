@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 const routes = require('./routes/rantlyRoutes')
 const cors = require('cors')
-
+const {notFound, finalErrorHandler} = require('./middlewares/errorHandler')
 const app = express()
 
 app.use(cors())
@@ -24,6 +24,5 @@ connect()
 
 app.use('/api/v1/rantly', routes)
 
-app.use((req, res) => {
-    res.status(404).json("The endpoint you requested does not exist")
-})
+app.use(notFound)
+app.use(finalErrorHandler)

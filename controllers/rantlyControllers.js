@@ -2,7 +2,7 @@ const Users = require('../models/userModel')
 const Messages = require('../models/messageModel')
 
 
-const addNewuser = async (req, res) => {
+const addNewuser = async (req, res, next) => {
 
     const {firstname, lastname, username} = req.body
 
@@ -21,7 +21,7 @@ const addNewuser = async (req, res) => {
         res.status(200).json({user})
 
     } catch (error) {
-        res.status(400).json({error: error.message})   
+        next(error) 
     }
 
 }
