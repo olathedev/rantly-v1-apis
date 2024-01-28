@@ -1,16 +1,20 @@
-const notFound = (req, res, next) => {
-    const error = new Error(`Resource not found - ${req.originalUrl}`)
+const {CustomError} = require('../errors/error-classes')
 
-    next(error)
+const notFound = (req, res, next) => {
+    res.status(404).json({msg: `Resource not found - ${req.originalUrl}`})
 }
 
 
 const finalErrorHandler = (err, req, res, next) => {
-    let statusCode = res.statusCode === 200 ? 400 : res.statusCode
 
+    if(err instanceof CustomError) {
+        return res.status(err.statusCode).json({msg: err.message})
+    }
+
+    let statusCode = res.statusCode === 200 ? 500 : res.statusCode
     let message = err.message
 
-    res.status(statusCode).json({message})
+    return res.status(statusCode).json({message})
     
 
 }

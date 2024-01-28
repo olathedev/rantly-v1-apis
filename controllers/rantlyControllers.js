@@ -1,23 +1,22 @@
 const Users = require('../models/userModel')
 const Messages = require('../models/messageModel')
+const {createCustomError} = require('../errors/error-classes')
 
 
 const addNewuser = async (req, res, next) => {
 
-    const {firstname, lastname, username} = req.body
-
-    if(!firstname || !lastname || !username){
-         return res.status(400).json("All fields are required")
-    }
+    const {firstname, lastname, username, password} = req.body
     
     try {
+        if(!firstname || !lastname || !username || password){
+            throw createCustomError("Fill out all fields", 400)
+        }
 
         const findusers = await Users.findOne({username})
         console.log(findusers)
         if(findusers) {
-            return res.status(400).json("username taken, tryanother")
+            throw createCustomError("username taken", 400)
         } 
-        const user = await Users.create({firstname,lastname, username})
         res.status(200).json({user})
 
     } catch (error) {
@@ -26,34 +25,35 @@ const addNewuser = async (req, res, next) => {
 
 }
 
-const getProfile = async (req, res) => {
+const checkUser = async (req, res, next) => {
 
     const {username} = req.params
 
     try {
-        const user = await Users.findOne({username}).select('firstname lastname username')
-        if(!user) return res.status(400).json({message: "Inavlid Profile link"})
+        const user = await Users.findOne({username}).select('username')
+        if(!user) throw createCustomError("Invalid Profile Link", 404)
         res.status(200).json({user})
     } catch (error) {
-        res.status(400).json({error: error.message})
+        next(error)
     }
 
 }
 
-const sendNewMessage = async (req, res) => {
-    const {message, hint} = req.body
+const sendNewMessage = async (req, res, next) => {
+    const {message} = req.body
     const {username} = req.params
 
     try {
-        const messages = await Messages.create({message, hint, userId: username})
         const findusers = await Users.findOne({username})
-        console.log(findusers)
         if(!findusers) {
-            return res.status(400).json("invalid Message link")
+            throw createCustomError("User not found", 404)
         } 
-        res.status(200).json({messages})
+        const result = await Messages.create({message, userId: findusers._id})
+        console.log(result)
+        
+        res.status(200).json({message: result})
     } catch (error) {
-        res.status(400).json({error: error.message})
+        next(error)
     } 
 }
 
@@ -69,7 +69,7 @@ const getMessages = async (req, res) => {
 
 module.exports = {
     addNewuser,
-    getProfile,
+    checkUser,
     sendNewMessage,
     getMessages
 }
