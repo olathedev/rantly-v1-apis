@@ -27,7 +27,6 @@ const userModel = new Schema({
         type: String,
         required: true,
         minLenght: 6,
-        maxLength: 20
     }
 
 }, {timestamps: true})

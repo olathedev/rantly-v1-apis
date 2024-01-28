@@ -23,7 +23,7 @@ const connect = async () => {
 
 connect()
 
-app.use('/api/v1.auth', authRoutes)
+app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/rantly', routes)
 
 app.use(notFound)
