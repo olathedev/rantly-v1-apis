@@ -1,7 +1,9 @@
-const {CustomApiError} = require('../errors/')
+const {CustomApiError, NotFound} = require('../errors/')
+
 
 const notFound = (req, res, next) => {
-    res.status(404).json({msg: `Resource not found - ${req.originalUrl}`})
+    const error = new NotFound(`Resource not found - ${req.originalUrl}`)
+    next(error)
 }
 
 
