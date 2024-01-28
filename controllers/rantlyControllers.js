@@ -1,6 +1,6 @@
 const Users = require('../models/userModel')
 const Messages = require('../models/messageModel')
-const {createCustomError} = require('../errors/error-classes')
+const {BadRequest} = require('../errors')
 
 
 const addNewuser = async (req, res, next) => {
@@ -9,13 +9,13 @@ const addNewuser = async (req, res, next) => {
     
     try {
         if(!firstname || !lastname || !username || !password){
-            throw createCustomError("Fill out all fields", 400)
+            throw new BadRequest("Fill out all fields")
         }
 
         const findusers = await Users.findOne({username})
         console.log(findusers)
         if(findusers) {
-            throw createCustomError("username taken", 400)
+            throw new BadRequest("username taken")
         }
 
         const user = await Users.create({firstname, lastname, username, password})
@@ -33,7 +33,7 @@ const checkUser = async (req, res, next) => {
 
     try {
         const user = await Users.findOne({username}).select('username')
-        if(!user) throw createCustomError("Invalid Profile Link", 404)
+        if(!user) throw new BadRequest("Invalid Profile Link")
         res.status(200).json({user})
     } catch (error) {
         next(error)
@@ -48,7 +48,7 @@ const sendNewMessage = async (req, res, next) => {
     try {
         const findusers = await Users.findOne({username})
         if(!findusers) {
-            throw createCustomError("User not found", 404)
+            throw new BadRequest("User not found")
         } 
         const result = await Messages.create({message, userId: findusers._id})
         console.log(result)
@@ -62,10 +62,10 @@ const sendNewMessage = async (req, res, next) => {
 const getMessages = async (req, res) => {
     const {username} = req.params
     try {
-        const messages = await Messages.find({userId: username}).select('message hint createdAt')
+        const messages = await Messages.find({userId: username}).select('message createdAt')
         res.status(200).json({messages})
     } catch (error) {
-        res.status(400).json({error: error.message})
+        next(error)
     }
 }
 

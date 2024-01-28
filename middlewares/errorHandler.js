@@ -1,4 +1,4 @@
-const {CustomError} = require('../errors/error-classes')
+const {CustomApiError} = require('../errors/')
 
 const notFound = (req, res, next) => {
     res.status(404).json({msg: `Resource not found - ${req.originalUrl}`})
@@ -7,7 +7,7 @@ const notFound = (req, res, next) => {
 
 const finalErrorHandler = (err, req, res, next) => {
 
-    if(err instanceof CustomError) {
+    if(err instanceof CustomApiError) {
         return res.status(err.statusCode).json({msg: err.message})
     }
 
