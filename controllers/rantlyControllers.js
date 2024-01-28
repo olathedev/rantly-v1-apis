@@ -8,7 +8,7 @@ const addNewuser = async (req, res, next) => {
     const {firstname, lastname, username, password} = req.body
     
     try {
-        if(!firstname || !lastname || !username || password){
+        if(!firstname || !lastname || !username || !password){
             throw createCustomError("Fill out all fields", 400)
         }
 
@@ -16,7 +16,9 @@ const addNewuser = async (req, res, next) => {
         console.log(findusers)
         if(findusers) {
             throw createCustomError("username taken", 400)
-        } 
+        }
+
+        const user = await Users.create({firstname, lastname, username, password})
         res.status(200).json({user})
 
     } catch (error) {
