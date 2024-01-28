@@ -6,20 +6,28 @@ const userModel = new Schema({
 
     firstname: {
         type: String,
-        required: true
+        required: [true, "firstname is required"],
+        lowerCase: true,
+        minLenght: 2,
+        maxLength: 50
     },
     lastname: {
         type: String,
-        required: true
+        required: [true, "lastname is required"],
+        lowerCase: true,
+        minLenght: 2,
+        maxLength: 50
     },
     username: {
         type: String,
-        required: true,
+        required: [true, "username is required"],
         unique: true
     },
     password: {
         type: String,
         required: true,
+        minLenght: 6,
+        maxLength: 20
     }
 
 }, {timestamps: true})

@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 require('dotenv').config()
+const authRoutes = require('./routes/authRoutes')
 const routes = require('./routes/rantlyRoutes')
 const cors = require('cors')
 const {notFound, finalErrorHandler} = require('./middlewares/errorHandler')
@@ -22,6 +23,7 @@ const connect = async () => {
 
 connect()
 
+app.use('/api/v1.auth', authRoutes)
 app.use('/api/v1/rantly', routes)
 
 app.use(notFound)
