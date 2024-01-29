@@ -33,7 +33,7 @@ const checkUser = async (req, res, next) => {
 
     try {
         const user = await Users.findOne({username}).select('username')
-        if(!user) throw new BadRequest("")
+        if(!user) throw new BadRequest("User not found")
         res.status(200).json({user})
     } catch (error) {
         next(error)

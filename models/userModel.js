@@ -46,4 +46,11 @@ UserSchema.statics.createToken = function () {
     })
 }
 
+UserSchema.statics.comparePassword = async function(candidatePassword, docPassword) {
+
+    const match = await bcrypt.compare(candidatePassword, docPassword)
+    return match
+
+}
+
 module.exports = mongoose.model('user', UserSchema)
