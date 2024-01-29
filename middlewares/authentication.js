@@ -1,22 +1,24 @@
 const jwt = require('jsonwebtoken')
 const {UnAuthenticatedError} = require('../errors')
+const {StatusCodes} = require('http-status-codes')
 
 const auth = async (req, res, next) => {
     const authheader = req.headers.authorization
-
-    if(!authheader || !authheader.startsWith('Bearer ')) {
-        throw new UnAuthenticatedError("Authentication invalid - No auth header provided or Bearer is not properly formated")
-    }
-
-    const token = authheader.split(' ')[1]
-
     try {
+        if(!authheader || !authheader.startsWith('Bearer ')) {
+           return res.status(StatusCodes.UNAUTHORIZED).json({message: "Authentication invalid - No auth header provided or Bearer is not properly formated"})
+        }
+
+        const token = authheader.split(' ')[1]
+        console.log(process.env.JWT_SECRET)
         const payload = jwt.verify(token, process.env.JWT_SECRET)
-        console.log(payload);
-        req.userId = {userId: payload.userId}
+        console.log(payload)
+        req.user = {userId: payload.userId}
+        console.log(req.user)
         next()
     } catch (error) {
-        throw new UnAuthenticatedError("Invalid Authentication")
+        res.status(StatusCodes.UNAUTHORIZED).json({message: "Invalid Authentication"})
+        
     }
 }
 

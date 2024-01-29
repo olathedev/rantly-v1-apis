@@ -41,7 +41,7 @@ UserSchema.pre('save', async function() {
 })
 
 UserSchema.statics.createToken = function () {
-    return jwt.sign({userId: this._id}, 'testsecret', {
+    return jwt.sign({userId: this._id}, process.env.JWT_SECRET, {
         expiresIn: '30d'
     })
 }

@@ -5,9 +5,12 @@ const {BadRequest, UnAuthenticatedError} = require('../errors')
 
 const register = async(req, res, next) => {
     try {
-        const result = await User.create({...req.body})
-        const token = User.createToken()
-        res.status(StatusCodes.CREATED).json({user: {username: result.username, firstname: result.firstname}, token})
+        const user = await User.create({...req.body})
+        const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {
+            expiresIn: '30d'
+
+        })
+        res.status(StatusCodes.CREATED).json({username: user.username, token})
     } catch (error) {
         next(error)
     }
@@ -34,8 +37,13 @@ const login = async(req, res, next) => {
             throw new UnAuthenticatedError("Invalid Credentials - password")
         }
 
-        const token = User.createToken()
-        res.status(StatusCodes.OK).json({user: {username: user.username}, token})
+        const token = jwt.sign({userId: 'johndoe'}, process.env.JWT_SECRET, {
+            expiresIn: '30d'
+
+        })
+        
+        
+        res.status(StatusCodes.OK).json({username: user.username, token})
         
     } catch (error) {
         next(error)
