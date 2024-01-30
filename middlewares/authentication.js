@@ -12,12 +12,11 @@ const auth = async (req, res, next) => {
         const token = authheader.split(' ')[1]
         console.log(process.env.JWT_SECRET)
         const payload = jwt.verify(token, process.env.JWT_SECRET)
-        console.log(payload)
         req.user = {userId: payload.userId}
         console.log(req.user)
         next()
     } catch (error) {
-        res.status(StatusCodes.UNAUTHORIZED).json({message: "Invalid Authentication"})
+            res.status(StatusCodes.UNAUTHORIZED).json({message: "Invalid Authentication"})
         
     }
 }

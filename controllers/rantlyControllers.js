@@ -36,9 +36,9 @@ const sendNewMessage = async (req, res, next) => {
 
 const getMessages = async (req, res, next) => {
     const {userId} = req.user
-    console.log(userId)
+    console.log(req.user)
     try {
-        const messages = await Messages.find({_id: userId})
+        const messages = await Messages.find({userId: userId})
 
         res.status(StatusCodes.OK).json({messages})
     } catch (error) {

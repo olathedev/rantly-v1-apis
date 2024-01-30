@@ -37,7 +37,7 @@ const login = async(req, res, next) => {
             throw new UnAuthenticatedError("Invalid Credentials - password")
         }
 
-        const token = jwt.sign({userId: 'johndoe'}, process.env.JWT_SECRET, {
+        const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {
             expiresIn: '30d'
 
         })
