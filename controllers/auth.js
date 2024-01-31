@@ -2,9 +2,14 @@ const User = require('../models/userModel')
 const {StatusCodes, BAD_REQUEST} = require('http-status-codes')
 const jwt = require('jsonwebtoken')
 const {BadRequest, UnAuthenticatedError} = require('../errors')
+const validate = require('../validators/user-validations')
 
 const register = async(req, res, next) => {
     try {
+        const {error} = validate(req.body)
+        if(error) {
+            throw new BadRequest(error)
+        }
         const user = await User.create({...req.body})
         const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {
             expiresIn: '30d'
