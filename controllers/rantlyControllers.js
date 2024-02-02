@@ -38,7 +38,7 @@ const getMessages = async (req, res, next) => {
     const {userId} = req.user
     console.log(req.user)
     try {
-        const messages = await Messages.find({userId: userId})
+        const messages = await Messages.find({userId: userId}).sort('-createdAt')
         res.status(StatusCodes.OK).json({messages})
     } catch (error) {
         next(error)

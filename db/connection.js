@@ -4,7 +4,7 @@ const connect = (uri) => {
     return mongoose.connect(uri, {
         useNewUrlParser: true,
         useCreateIndex: true,
-        useFindAndModify: false,
+        useFindAndModify: false,    
         useUnifiedTopology: true
 
     })
